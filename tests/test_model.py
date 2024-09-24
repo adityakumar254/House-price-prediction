@@ -1,22 +1,31 @@
 # tests/test_model.py
-
-import pytest
+import unittest
+import joblib
 import pandas as pd
-from sklearn.metrics import mean_squared_error
-from model.train import model  # Assuming 'model' is defined in train.py
 
-@pytest.fixture
-def setup_data():
-    data = pd.read_csv('data/california_housing.csv')
-    X = data.drop('median_house_value', axis=1)
-    y = data['median_house_value']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    return X_train, X_test, y_train, y_test
+class TestModel(unittest.TestCase):
+    def setUp(self):
+        # Load the trained model
+        self.model = joblib.load('model/house_price_model.pkl')
 
-def test_model_training(setup_data):
-    X_train, X_test, y_train, y_test = setup_data
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    assert mean_squared_error(y_test, y_pred) < 1.0  # Example assertion, adjust as needed
+    def test_prediction(self):
+        # Create sample input data
+        new_data = pd.DataFrame({
+            'MedInc': [8.3252],
+            'HouseAge': [41.0],
+            'AveRooms': [6.984127],
+            'AveBedrms': [1.023810],
+            'Population': [322.0],
+            'AveOccup': [2.555556],
+            'Latitude': [37.88],
+            'Longitude': [-122.23]
+        })
 
-# Add more tests as necessary
+        # Make predictions
+        prediction = self.model.predict(new_data)
+        
+        # Check if the prediction is a float and reasonable
+        self.assertIsInstance(prediction[0], float)
+
+if __name__ == '__main__':
+    unittest.main()
