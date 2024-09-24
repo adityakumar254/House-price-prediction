@@ -36,9 +36,8 @@ jobs:
           # Optionally, deploy your model here (e.g., to a cloud service)
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v2.4.1
         with:
           name: trained-model
           path: model/california_housing_model.pkl
-
 
